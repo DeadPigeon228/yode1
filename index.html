@@ -99,15 +99,15 @@
     }
 
     .btn-add {
-      background: #6a9e6a;
-      color: #e0f0e0;
+      background: #4a7a4a;
+      color: #c0e0c0;
       width: 100%;
     }
 
     .btn-add:hover {
-      background: #558855;
+      background: #3a6a3a;
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(106, 158, 106, 0.4);
+      box-shadow: 0 6px 20px rgba(74, 122, 74, 0.4);
     }
 
     .btn-small {
@@ -158,14 +158,14 @@
       background: #5a2020;
     }
 
-    /* Кнопки статусов */
+
     .btn-status {
       padding: 7px 16px;
       font-size: 16px;
       border-radius: 20px;
-      border: 1px solid #558855;
-      background: #6a9e6a;
-      color: #e0f0e0;
+      border: 1px solid #3a6a3a;
+      background: #4a7a4a;
+      color: #c0e0c0;
       cursor: pointer;
       font-weight: 600;
       transition: all 0.2s;
@@ -175,17 +175,17 @@
     }
 
     .btn-status.active {
-      background: #3a6a3a;
+      background: #2d5a2d;
       color: #d0f0d0;
-      border-color: #2d5a2d;
+      border-color: #1d4a1d;
     }
 
     .btn-status:hover {
-      background: #558855;
+      background: #3a6a3a;
     }
 
     .btn-status.active:hover {
-      background: #2d5a2d;
+      background: #1d4a1d;
     }
 
     .btn-status.dropped-btn.active {
@@ -198,9 +198,9 @@
     }
 
     .btn-status.planned-btn.active {
-      background: #5a7a8a;
+      background: #3a5a6a;
       color: #d0e8f0;
-      border-color: #3a5a6a;
+      border-color: #2a4a5a;
     }
 
     .toolbar {
@@ -220,7 +220,7 @@
     .filter-btn {
       padding: 8px 16px;
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid #3a6a3a;
       background: #4a7a4a;
       color: #c0e0c0;
       cursor: pointer;
@@ -230,9 +230,57 @@
 
     .filter-btn.active,
     .filter-btn:hover {
-      background: #b8e6b8;
-      border-color: #b8e6b8;
-      color: #2d5a2d;
+      background: #3a6a3a;
+      border-color: #2d5a2d;
+      color: #d0f0d0;
+    }
+
+  
+    .sort-btn {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid #3a6a3a;
+      background: #4a7a4a;
+      color: #c0e0c0;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .sort-btn.active {
+      background: #2d5a2d;
+      color: #d0f0d0;
+      border-color: #1d4a1d;
+    }
+
+    .sort-btn:hover {
+      background: #3a6a3a;
+    }
+
+
+    .search-input {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid #3a6a3a;
+      background: #4a7a4a;
+      color: #c0e0c0;
+      font-size: 13px;
+      outline: none;
+      width: 180px;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #2d5a2d;
+      background: #3a6a3a;
+      color: #d0f0d0;
+      box-shadow: 0 0 0 3px rgba(74, 122, 74, 0.2);
+    }
+
+    .search-input::placeholder {
+      color: #8a9e8a;
     }
 
     .item {
@@ -274,7 +322,6 @@
       accent-color: #c07070;
     }
 
-  
     .item-title {
       font-weight: 700;
       font-size: 14px;
@@ -285,7 +332,6 @@
       padding: 5px 12px;
       border-radius: 20px;
       border: 1px solid #c4b06a;
-      cursor: pointer;
       transition: all 0.2s;
       text-align: center;
       display: flex;
@@ -305,7 +351,7 @@
       flex-wrap: wrap;
     }
 
-   
+
     .rating-display {
       display: flex;
       align-items: center;
@@ -363,16 +409,16 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      background: #6a9e6a;
+      background: #4a7a4a;
       padding: 5px 10px;
       border-radius: 20px;
       font-size: 13px;
-      border: 1px solid #558855;
+      border: 1px solid #3a6a3a;
     }
 
     .item-season-episode span {
       font-weight: bold;
-      color: #e0f0e0;
+      color: #c0e0c0;
       min-width: 18px;
       text-align: center;
     }
@@ -410,6 +456,9 @@
       .form-row input {
         min-width: 100%;
       }
+      .search-input {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -438,6 +487,15 @@
         <button class="filter-btn" onclick="setFilter('watched')">✅ Просмотрено</button>
         <button class="filter-btn" onclick="setFilter('dropped')">⛔️ Заброшено</button>
       </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по названию..." oninput="render()">
+      <button class="sort-btn" onclick="setSort('newest')">🕐 Новые</button>
+      <button class="sort-btn" onclick="setSort('oldest')">🕐 Старые</button>
+      <button class="sort-btn" onclick="setSort('az')">🔤 А-Я</button>
+      <button class="sort-btn" onclick="setSort('za')">🔤 Я-А</button>
+      <button class="sort-btn" onclick="setSort('rating')">⭐ Оценка</button>
       <button class="btn btn-delete-selected btn-small" onclick="deleteSelected()">🗑 Удалить выбранные</button>
     </div>
 
@@ -470,6 +528,7 @@
 
     let allData = [];
     let currentFilter = 'all';
+    let currentSort = null;
     let selectedIds = new Set();
 
     onValue(dbRef, (snapshot) => {
@@ -559,7 +618,7 @@
 
     function toggleSelectAll() {
       const checked = document.getElementById('selectAllCheckbox').checked;
-      const data = getFilteredData();
+      const data = getFilteredAndSortedData();
       if (checked) {
         data.forEach(i => selectedIds.add(i.id));
       } else {
@@ -582,7 +641,7 @@
       document.getElementById('selectedCount').textContent =
         selectedIds.size > 0 ? `Выбрано: ${selectedIds.size}` : '';
       document.getElementById('selectAllRow').style.display =
-        getFilteredData().length > 0 ? 'flex' : 'none';
+        getFilteredAndSortedData().length > 0 ? 'flex' : 'none';
     }
 
     function setFilter(filter) {
@@ -594,21 +653,68 @@
     }
     window.setFilter = setFilter;
 
-    function getFilteredData() {
-      switch (currentFilter) {
-        case 'watching': return allData.filter(i => i.status === 'watching');
-        case 'planned': return allData.filter(i => i.status === 'planned');
-        case 'watched': return allData.filter(i => i.status === 'watched');
-        case 'dropped': return allData.filter(i => i.status === 'dropped');
-        default: return allData;
+    function setSort(sort) {
+      if (currentSort === sort) {
+        currentSort = null;
+      } else {
+        currentSort = sort;
       }
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+      if (currentSort) {
+        document.querySelector(`.sort-btn[onclick="setSort('${currentSort}')"]`)?.classList.add('active');
+      }
+      render();
+    }
+    window.setSort = setSort;
+
+    function getFilteredData() {
+      let data = allData;
+      switch (currentFilter) {
+        case 'watching': data = allData.filter(i => i.status === 'watching'); break;
+        case 'planned': data = allData.filter(i => i.status === 'planned'); break;
+        case 'watched': data = allData.filter(i => i.status === 'watched'); break;
+        case 'dropped': data = allData.filter(i => i.status === 'dropped'); break;
+      }
+      return data;
+    }
+
+    function getFilteredAndSortedData() {
+      let data = [...getFilteredData()];
+
+      const searchQuery = document.getElementById('searchInput')?.value.trim().toLowerCase() || '';
+      if (searchQuery) {
+        data = data.filter(i => i.title.toLowerCase().includes(searchQuery));
+      }
+
+      if (currentSort) {
+        switch (currentSort) {
+          case 'newest':
+            data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            break;
+          case 'oldest':
+            data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            break;
+          case 'az':
+            data.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+            break;
+          case 'za':
+            data.sort((a, b) => b.title.localeCompare(a.title, 'ru'));
+            break;
+          case 'rating':
+            data.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            break;
+        }
+      }
+
+      return data;
     }
 
     function render() {
-      const data = getFilteredData();
+      const data = getFilteredAndSortedData();
       const container = document.getElementById('list');
       const stats = document.getElementById('stats');
-      stats.textContent = `Всего: ${allData.length} | Смотрим: ${allData.filter(i => i.status === 'watching').length} | Запланировано: ${allData.filter(i => i.status === 'planned').length} | Просмотрено: ${allData.filter(i => i.status === 'watched').length} | Заброшено: ${allData.filter(i => i.status === 'dropped').length}`;
+      const searchQuery = document.getElementById('searchInput')?.value.trim() || '';
+      stats.textContent = `Всего: ${allData.length} | Смотрим: ${allData.filter(i => i.status === 'watching').length} | Запланировано: ${allData.filter(i => i.status === 'planned').length} | Просмотрено: ${allData.filter(i => i.status === 'watched').length} | Заброшено: ${allData.filter(i => i.status === 'dropped').length}${searchQuery ? ` | Найдено: ${data.length}` : ''}`;
 
       updateSelectUI();
 
@@ -661,6 +767,8 @@
     document.getElementById('inputTitle').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') addItem();
     });
+
+    window.render = render;
   </script>
 </body>
 </html>
