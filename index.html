@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>МЫ ХОТИМ ПОСМОТРЕТЬ ИТД</title>
+  <title>МЫ ХОДИМ ПОСМОТРЕТЬ</title>
   <style>
     * {
       margin: 0;
@@ -111,35 +111,41 @@
     }
 
     .btn-small {
-      padding: 4px 10px;
+      padding: 6px 14px;
       font-size: 13px;
       border-radius: 6px;
-      min-width: 28px;
+      min-width: 30px;
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+      transition: all 0.2s;
     }
 
     .btn-plus {
-      background: #6a9e6a;
+      background: #4a7a4a;
       color: #e0f0e0;
     }
     .btn-plus:hover {
-      background: #558855;
+      background: #3a6a3a;
     }
 
     .btn-minus {
-      background: #c47070;
-      color: #f0e0e0;
+      background: #4a7a4a;
+      color: #e0f0e0;
     }
     .btn-minus:hover {
-      background: #a85555;
+      background: #3a6a3a;
     }
 
     .btn-delete {
-      background: transparent;
-      color: #c07070;
-      border: 1px solid #c07070;
+      background: #d4a0a0;
+      color: #5c2d2d;
+      border: 1px solid #c47070;
+      font-size: 18px;
+      padding: 8px 14px;
     }
     .btn-delete:hover {
-      background: #c07070;
+      background: #c47070;
       color: white;
     }
 
@@ -150,6 +156,45 @@
     }
     .btn-delete-selected:hover {
       background: #5a2020;
+    }
+
+    /* Кнопки статусов - ЗЕЛЁНЫЕ */
+    .btn-status {
+      padding: 7px 16px;
+      font-size: 16px;
+      border-radius: 20px;
+      border: 1px solid #558855;
+      background: #6a9e6a;
+      color: #e0f0e0;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      white-space: nowrap;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .btn-status.active {
+      background: #3a6a3a;
+      color: #d0f0d0;
+      border-color: #2d5a2d;
+    }
+
+    .btn-status:hover {
+      background: #558855;
+    }
+
+    .btn-status.active:hover {
+      background: #2d5a2d;
+    }
+
+    .btn-status.dropped-btn.active {
+      background: #7a3030;
+      color: #f0d0d0;
+      border-color: #5a2020;
+    }
+    .btn-status.dropped-btn.active:hover {
+      background: #6a2525;
     }
 
     .toolbar {
@@ -184,8 +229,9 @@
       color: #2d5a2d;
     }
 
+    /* ВСЯ СТРОКА СЕРИАЛА - ЖЁЛТАЯ */
     .item {
-      background: rgba(20, 20, 40, 0.75);
+      background: #c4b06a;
       border-radius: 14px;
       padding: 16px;
       margin-bottom: 10px;
@@ -193,19 +239,18 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid #a8944f;
       transition: all 0.2s;
-      backdrop-filter: blur(6px);
     }
 
     .item.selected {
       border-color: #ff5252;
-      background: rgba(255, 82, 82, 0.2);
+      background: #d4a0a0;
     }
 
     .item.watched {
-      background: rgba(30, 50, 30, 0.8);
-      border-color: rgba(168, 216, 168, 0.3);
+      background: #b8c4a0;
+      border-color: #8a9e6a;
     }
 
     .item.dropped {
@@ -213,16 +258,8 @@
     }
 
     .item:hover {
-      background: rgba(30, 30, 55, 0.8);
-      border-color: rgba(255, 255, 255, 0.12);
-    }
-
-    .item-checkbox {
-      width: 22px;
-      height: 22px;
-      cursor: pointer;
-      accent-color: #6a9e6a;
-      transform: scale(1.2);
+      background: #d5c78e;
+      border-color: #8a7a3a;
     }
 
     .item-select {
@@ -232,52 +269,68 @@
       accent-color: #c07070;
     }
 
+    /* Название сериала - СВЕТЛО-ЖЁЛТАЯ ОКАНТОВКА */
     .item-title {
       font-weight: 700;
       font-size: 16px;
       min-width: 140px;
       flex: 1;
-      color: #d8d8e8;
+      color: #3d3520;
+      background: #fdf6d5;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid #a8944f;
+    }
+
+    /* Заметки */
+    .item-notes {
+      font-size: 12px;
+      color: #5c4a1f;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-top: 2px;
     }
 
     .item-info {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .item-rating {
-      color: #e0c070;
+      color: #5c4a1f;
       font-weight: bold;
       font-size: 14px;
     }
 
+    /* Овалы сезонов и серий - ЗЕЛЁНЫЕ */
     .item-season-episode {
       display: flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(10, 10, 25, 0.7);
+      gap: 4px;
+      background: #6a9e6a;
       padding: 5px 10px;
       border-radius: 20px;
       font-size: 13px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid #558855;
     }
 
     .item-season-episode span {
       font-weight: bold;
-      color: #b0b0c0;
+      color: #e0f0e0;
       min-width: 18px;
       text-align: center;
     }
 
-    .item-notes {
-      font-size: 12px;
-      color: #888;
-      max-width: 150px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .status-buttons {
+      display: flex;
+      gap: 6px;
     }
 
     .stats {
@@ -313,7 +366,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>🎬 МЫ ХОТИМ ПОСМОТРЕТЬ ИТД</h1>
+    <h1>🎬 МЫ ХОДИМ ПОСМОТРЕТЬ</h1>
 
     <div class="add-form">
       <div class="form-row">
@@ -334,7 +387,7 @@
         <button class="filter-btn" onclick="setFilter('watching')">📺 Смотрим</button>
         <button class="filter-btn" onclick="setFilter('planned')">📋 Запланировано</button>
         <button class="filter-btn" onclick="setFilter('watched')">✅ Просмотрено</button>
-        <button class="filter-btn" onclick="setFilter('dropped')">❌ Заброшено</button>
+        <button class="filter-btn" onclick="setFilter('dropped')">⛔️ Заброшено</button>
       </div>
       <button class="btn btn-delete-selected btn-small" onclick="deleteSelected()">🗑 Удалить выбранные</button>
     </div>
@@ -376,8 +429,7 @@
         season: seasonVal === '' ? 1 : (parseInt(seasonVal) || 1),
         episode: episodeVal === '' ? 1 : (parseInt(episodeVal) || 1),
         notes: document.getElementById('inputNotes').value.trim(),
-        watched: false,
-        dropped: false,
+        status: 'watching',
         createdAt: new Date().toISOString()
       };
 
@@ -396,12 +448,11 @@
       document.getElementById('inputNotes').value = '';
     }
 
-    function toggleWatched(id) {
+    function setStatus(id, status) {
       const data = loadData();
       const item = data.find(i => i.id === id);
       if (item) {
-        item.watched = !item.watched;
-        if (item.watched) item.dropped = false;
+        item.status = status;
         saveData(data);
         render();
       }
@@ -473,17 +524,6 @@
         getFilteredData().length > 0 ? 'flex' : 'none';
     }
 
-    function toggleDropped(id) {
-      const data = loadData();
-      const item = data.find(i => i.id === id);
-      if (item) {
-        item.dropped = !item.dropped;
-        if (item.dropped) item.watched = false;
-        saveData(data);
-        render();
-      }
-    }
-
     function setFilter(filter) {
       currentFilter = filter;
       selectedIds.clear();
@@ -495,10 +535,10 @@
     function getFilteredData() {
       const data = loadData();
       switch (currentFilter) {
-        case 'watching': return data.filter(i => !i.watched && !i.dropped);
-        case 'planned': return data.filter(i => !i.watched && !i.dropped && i.episode === 1 && i.season === 1);
-        case 'watched': return data.filter(i => i.watched);
-        case 'dropped': return data.filter(i => i.dropped);
+        case 'watching': return data.filter(i => i.status === 'watching');
+        case 'planned': return data.filter(i => i.status === 'planned');
+        case 'watched': return data.filter(i => i.status === 'watched');
+        case 'dropped': return data.filter(i => i.status === 'dropped');
         default: return data;
       }
     }
@@ -508,7 +548,7 @@
       const container = document.getElementById('list');
       const stats = document.getElementById('stats');
       const allData = loadData();
-      stats.textContent = `Всего: ${allData.length} | Смотрим: ${allData.filter(i => !i.watched && !i.dropped).length} | Просмотрено: ${allData.filter(i => i.watched).length} | Заброшено: ${allData.filter(i => i.dropped).length}`;
+      stats.textContent = `Всего: ${allData.length} | Смотрим: ${allData.filter(i => i.status === 'watching').length} | Просмотрено: ${allData.filter(i => i.status === 'watched').length} | Заброшено: ${allData.filter(i => i.status === 'dropped').length}`;
 
       updateSelectUI();
 
@@ -519,9 +559,8 @@
       }
 
       container.innerHTML = data.map(item => `
-        <div class="item ${item.watched ? 'watched' : ''} ${item.dropped ? 'dropped' : ''} ${selectedIds.has(item.id) ? 'selected' : ''}">
+        <div class="item ${item.status === 'watched' ? 'watched' : ''} ${item.status === 'dropped' ? 'dropped' : ''} ${selectedIds.has(item.id) ? 'selected' : ''}">
           <input type="checkbox" class="item-select" ${selectedIds.has(item.id) ? 'checked' : ''} onchange="toggleSelect(${item.id})" title="Выбрать для удаления">
-          <input type="checkbox" class="item-checkbox" ${item.watched ? 'checked' : ''} onchange="toggleWatched(${item.id})" title="Отметить просмотренным">
 
           <div class="item-title">
             ${item.title}
@@ -533,18 +572,23 @@
 
             <div class="item-season-episode">
               <button class="btn btn-small btn-minus" onclick="changeSeason(${item.id}, -1)" title="Предыдущий сезон">–</button>
-              <span>S${item.season}</span>
+              <span>Сезон ${item.season}</span>
               <button class="btn btn-small btn-plus" onclick="changeSeason(${item.id}, 1)" title="Следующий сезон">+</button>
             </div>
 
             <div class="item-season-episode">
               <button class="btn btn-small btn-minus" onclick="changeEpisode(${item.id}, -1)" title="Предыдущая серия">–</button>
-              <span>E${item.episode}</span>
+              <span>Серия ${item.episode}</span>
               <button class="btn btn-small btn-plus" onclick="changeEpisode(${item.id}, 1)" title="Следующая серия">+</button>
             </div>
 
+            <div class="status-buttons">
+              <button class="btn-status watching ${item.status === 'watching' ? 'active' : ''}" onclick="setStatus(${item.id}, 'watching')">📺</button>
+              <button class="btn-status watched-btn ${item.status === 'watched' ? 'active' : ''}" onclick="setStatus(${item.id}, 'watched')">✅</button>
+              <button class="btn-status dropped-btn ${item.status === 'dropped' ? 'active' : ''}" onclick="setStatus(${item.id}, 'dropped')">⛔️</button>
+            </div>
+
             <button class="btn btn-small btn-delete" onclick="deleteItem(${item.id})" title="Удалить">✕</button>
-            ${!item.watched ? `<button class="btn btn-small" style="background:#555;color:#ccc;font-size:11px;" onclick="toggleDropped(${item.id})" title="Забросить">${item.dropped ? 'Вернуть' : 'Забросить'}</button>` : ''}
           </div>
         </div>
       `).join('');
