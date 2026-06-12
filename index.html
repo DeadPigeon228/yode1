@@ -158,7 +158,6 @@
       background: #5a2020;
     }
 
-    /* Кнопки статусов - ЗЕЛЁНЫЕ */
     .btn-status {
       padding: 7px 16px;
       font-size: 16px;
@@ -229,7 +228,6 @@
       color: #2d5a2d;
     }
 
-    /* ВСЯ СТРОКА СЕРИАЛА - ЖЁЛТАЯ */
     .item {
       background: #c4b06a;
       border-radius: 14px;
@@ -269,7 +267,6 @@
       accent-color: #c07070;
     }
 
-    /* Название сериала - СВЕТЛО-ЖЁЛТАЯ ОКАНТОВКА */
     .item-title {
       font-weight: 700;
       font-size: 16px;
@@ -282,7 +279,6 @@
       border: 1px solid #a8944f;
     }
 
-    /* Заметки */
     .item-notes {
       font-size: 12px;
       color: #5c4a1f;
@@ -309,7 +305,6 @@
       font-size: 14px;
     }
 
-    /* Овалы сезонов и серий - ЗЕЛЁНЫЕ */
     .item-season-episode {
       display: flex;
       align-items: center;
@@ -401,19 +396,34 @@
     <div id="list"></div>
   </div>
 
-  <script>
-    const STORAGE_KEY = 'seriesTrackerData';
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getDatabase, ref, onValue, set, push, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDVLLidQuHLIWQhp0PNNFWcWGMM1TRBb6U",
+      authDomain: "tipseriki.firebaseapp.com",
+      projectId: "tipseriki",
+      storageBucket: "tipseriki.firebasestorage.app",
+      messagingSenderId: "268844061681",
+      appId: "1:268844061681:web:9d7fb866f2529ba515ea50"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dbRef = ref(db, 'series');
+
+    let allData = [];
     let currentFilter = 'all';
     let selectedIds = new Set();
 
-    function loadData() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    }
-
-    function saveData(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
+    // Слушаем изменения в базе
+    onValue(dbRef, (snapshot) => {
+      const val = snapshot.val();
+      allData = val ? Object.entries(val).map(([key, value]) => ({ ...value, id: key })) : [];
+      render();
+    });
 
     function addItem() {
       const title = document.getElementById('inputTitle').value.trim();
@@ -422,8 +432,8 @@
       const seasonVal = document.getElementById('inputSeason').value.trim();
       const episodeVal = document.getElementById('inputEpisode').value.trim();
 
-      const item = {
-        id: Date.now(),
+      const newRef = push(dbRef);
+      set(newRef, {
         title: title,
         rating: parseFloat(document.getElementById('inputRating').value) || 0,
         season: seasonVal === '' ? 1 : (parseInt(seasonVal) || 1),
@@ -431,13 +441,9 @@
         notes: document.getElementById('inputNotes').value.trim(),
         status: 'watching',
         createdAt: new Date().toISOString()
-      };
+      });
 
-      const data = loadData();
-      data.push(item);
-      saveData(data);
       clearForm();
-      render();
     }
 
     function clearForm() {
@@ -449,42 +455,34 @@
     }
 
     function setStatus(id, status) {
-      const data = loadData();
-      const item = data.find(i => i.id === id);
-      if (item) {
-        item.status = status;
-        saveData(data);
-        render();
-      }
+      set(ref(db, 'series/' + id + '/status'), status);
     }
 
     function changeEpisode(id, delta) {
-      const data = loadData();
-      const item = data.find(i => i.id === id);
+      const item = allData.find(i => i.id === id);
       if (item) {
-        item.episode = Math.max(1, item.episode + delta);
-        saveData(data);
-        render();
+        set(ref(db, 'series/' + id + '/episode'), Math.max(1, item.episode + delta));
       }
     }
 
     function changeSeason(id, delta) {
-      const data = loadData();
-      const item = data.find(i => i.id === id);
+      const item = allData.find(i => i.id === id);
       if (item) {
-        item.season = Math.max(1, item.season + delta);
-        saveData(data);
-        render();
+        set(ref(db, 'series/' + id + '/season'), Math.max(1, item.season + delta));
       }
     }
+
+    window.addItem = addItem;
+    window.setStatus = setStatus;
+    window.changeEpisode = changeEpisode;
+    window.changeSeason = changeSeason;
 
     function deleteItem(id) {
       if (!confirm('Удалить навсегда?')) return;
       selectedIds.delete(id);
-      const data = loadData().filter(i => i.id !== id);
-      saveData(data);
-      render();
+      remove(ref(db, 'series/' + id));
     }
+    window.deleteItem = deleteItem;
 
     function toggleSelect(id) {
       if (selectedIds.has(id)) {
@@ -494,6 +492,7 @@
       }
       updateSelectUI();
     }
+    window.toggleSelect = toggleSelect;
 
     function toggleSelectAll() {
       const checked = document.getElementById('selectAllCheckbox').checked;
@@ -506,16 +505,15 @@
       updateSelectUI();
       render();
     }
+    window.toggleSelectAll = toggleSelectAll;
 
     function deleteSelected() {
       if (selectedIds.size === 0) return alert('Ничего не выбрано!');
       if (!confirm(`Удалить ${selectedIds.size} выбранных элементов?`)) return;
-
-      const data = loadData().filter(i => !selectedIds.has(i.id));
+      selectedIds.forEach(id => remove(ref(db, 'series/' + id)));
       selectedIds.clear();
-      saveData(data);
-      render();
     }
+    window.deleteSelected = deleteSelected;
 
     function updateSelectUI() {
       document.getElementById('selectedCount').textContent =
@@ -531,15 +529,15 @@
       document.querySelector(`.filter-btn[onclick="setFilter('${filter}')"]`)?.classList.add('active');
       render();
     }
+    window.setFilter = setFilter;
 
     function getFilteredData() {
-      const data = loadData();
       switch (currentFilter) {
-        case 'watching': return data.filter(i => i.status === 'watching');
-        case 'planned': return data.filter(i => i.status === 'planned');
-        case 'watched': return data.filter(i => i.status === 'watched');
-        case 'dropped': return data.filter(i => i.status === 'dropped');
-        default: return data;
+        case 'watching': return allData.filter(i => i.status === 'watching');
+        case 'planned': return allData.filter(i => i.status === 'planned');
+        case 'watched': return allData.filter(i => i.status === 'watched');
+        case 'dropped': return allData.filter(i => i.status === 'dropped');
+        default: return allData;
       }
     }
 
@@ -547,7 +545,6 @@
       const data = getFilteredData();
       const container = document.getElementById('list');
       const stats = document.getElementById('stats');
-      const allData = loadData();
       stats.textContent = `Всего: ${allData.length} | Смотрим: ${allData.filter(i => i.status === 'watching').length} | Просмотрено: ${allData.filter(i => i.status === 'watched').length} | Заброшено: ${allData.filter(i => i.status === 'dropped').length}`;
 
       updateSelectUI();
@@ -560,7 +557,7 @@
 
       container.innerHTML = data.map(item => `
         <div class="item ${item.status === 'watched' ? 'watched' : ''} ${item.status === 'dropped' ? 'dropped' : ''} ${selectedIds.has(item.id) ? 'selected' : ''}">
-          <input type="checkbox" class="item-select" ${selectedIds.has(item.id) ? 'checked' : ''} onchange="toggleSelect(${item.id})" title="Выбрать для удаления">
+          <input type="checkbox" class="item-select" ${selectedIds.has(item.id) ? 'checked' : ''} onchange="toggleSelect('${item.id}')" title="Выбрать для удаления">
 
           <div class="item-title">
             ${item.title}
@@ -571,24 +568,24 @@
             ${item.rating > 0 ? `<span class="item-rating">★ ${item.rating}</span>` : ''}
 
             <div class="item-season-episode">
-              <button class="btn btn-small btn-minus" onclick="changeSeason(${item.id}, -1)" title="Предыдущий сезон">–</button>
+              <button class="btn btn-small btn-minus" onclick="changeSeason('${item.id}', -1)" title="Предыдущий сезон">–</button>
               <span>Сезон ${item.season}</span>
-              <button class="btn btn-small btn-plus" onclick="changeSeason(${item.id}, 1)" title="Следующий сезон">+</button>
+              <button class="btn btn-small btn-plus" onclick="changeSeason('${item.id}', 1)" title="Следующий сезон">+</button>
             </div>
 
             <div class="item-season-episode">
-              <button class="btn btn-small btn-minus" onclick="changeEpisode(${item.id}, -1)" title="Предыдущая серия">–</button>
+              <button class="btn btn-small btn-minus" onclick="changeEpisode('${item.id}', -1)" title="Предыдущая серия">–</button>
               <span>Серия ${item.episode}</span>
-              <button class="btn btn-small btn-plus" onclick="changeEpisode(${item.id}, 1)" title="Следующая серия">+</button>
+              <button class="btn btn-small btn-plus" onclick="changeEpisode('${item.id}', 1)" title="Следующая серия">+</button>
             </div>
 
             <div class="status-buttons">
-              <button class="btn-status watching ${item.status === 'watching' ? 'active' : ''}" onclick="setStatus(${item.id}, 'watching')">📺</button>
-              <button class="btn-status watched-btn ${item.status === 'watched' ? 'active' : ''}" onclick="setStatus(${item.id}, 'watched')">✅</button>
-              <button class="btn-status dropped-btn ${item.status === 'dropped' ? 'active' : ''}" onclick="setStatus(${item.id}, 'dropped')">⛔️</button>
+              <button class="btn-status watching ${item.status === 'watching' ? 'active' : ''}" onclick="setStatus('${item.id}', 'watching')">📺</button>
+              <button class="btn-status watched-btn ${item.status === 'watched' ? 'active' : ''}" onclick="setStatus('${item.id}', 'watched')">✅</button>
+              <button class="btn-status dropped-btn ${item.status === 'dropped' ? 'active' : ''}" onclick="setStatus('${item.id}', 'dropped')">⛔️</button>
             </div>
 
-            <button class="btn btn-small btn-delete" onclick="deleteItem(${item.id})" title="Удалить">✕</button>
+            <button class="btn btn-small btn-delete" onclick="deleteItem('${item.id}')" title="Удалить">✕</button>
           </div>
         </div>
       `).join('');
@@ -597,8 +594,6 @@
     document.getElementById('inputTitle').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') addItem();
     });
-
-    render();
   </script>
 </body>
 </html>
