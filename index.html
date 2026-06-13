@@ -86,6 +86,11 @@
       color: #8a7a4a;
     }
 
+    .form-row input:disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
     .btn {
       padding: 10px 20px;
       border-radius: 10px;
@@ -158,6 +163,37 @@
       background: #5a2020;
     }
 
+   
+    .type-toggle {
+      display: flex;
+      gap: 0;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #a8944f;
+    }
+
+    .type-toggle button {
+      flex: 1;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+      background: #d5c78e;
+      color: #8a7a4a;
+    }
+
+    .type-toggle button.active {
+      background: #4a7a4a;
+      color: #c0e0c0;
+    }
+
+    .type-toggle button:hover:not(.active) {
+      background: #c4b06a;
+      color: #5c4a1f;
+    }
 
     .btn-status {
       padding: 7px 16px;
@@ -175,9 +211,9 @@
     }
 
     .btn-status.active {
-      background: #2d5a2d;
+      background: #2d4a2d;
       color: #d0f0d0;
-      border-color: #1d4a1d;
+      border-color: #1d3a1d;
     }
 
     .btn-status:hover {
@@ -185,22 +221,34 @@
     }
 
     .btn-status.active:hover {
-      background: #1d4a1d;
+      background: #1d3a1d;
     }
 
     .btn-status.dropped-btn.active {
-      background: #7a3030;
+      background: #5a2020;
       color: #f0d0d0;
-      border-color: #5a2020;
+      border-color: #3a1010;
     }
     .btn-status.dropped-btn.active:hover {
-      background: #6a2525;
+      background: #4a1515;
     }
 
     .btn-status.planned-btn.active {
-      background: #3a5a6a;
-      color: #d0e8f0;
-      border-color: #2a4a5a;
+      background: #4a6078;
+      color: #c8d8e8;
+      border-color: #3a5068;
+    }
+    .btn-status.planned-btn.active:hover {
+      background: #3a5068;
+    }
+
+    .btn-status.watched-btn.active {
+      background: #7cba7c;
+      color: #e0ffe0;
+      border-color: #5a9a5a;
+    }
+    .btn-status.watched-btn.active:hover {
+      background: #6aaa6a;
     }
 
     .toolbar {
@@ -230,12 +278,12 @@
 
     .filter-btn.active,
     .filter-btn:hover {
-      background: #3a6a3a;
-      border-color: #2d5a2d;
+      background: #2d4a2d;
+      border-color: #1d3a1d;
       color: #d0f0d0;
     }
 
-  
+   
     .sort-btn {
       padding: 8px 14px;
       border-radius: 20px;
@@ -250,16 +298,16 @@
     }
 
     .sort-btn.active {
-      background: #2d5a2d;
+      background: #2d4a2d;
       color: #d0f0d0;
-      border-color: #1d4a1d;
+      border-color: #1d3a1d;
     }
 
     .sort-btn:hover {
       background: #3a6a3a;
     }
 
-
+   
     .search-input {
       padding: 8px 14px;
       border-radius: 20px;
@@ -273,7 +321,7 @@
     }
 
     .search-input:focus {
-      border-color: #2d5a2d;
+      border-color: #2d4a2d;
       background: #3a6a3a;
       color: #d0f0d0;
       box-shadow: 0 0 0 3px rgba(74, 122, 74, 0.2);
@@ -301,15 +349,6 @@
       background: #d4a0a0;
     }
 
-    .item.watched {
-      background: #b8c4a0;
-      border-color: #8a9e6a;
-    }
-
-    .item.dropped {
-      opacity: 0.5;
-    }
-
     .item:hover {
       background: #d5c78e;
       border-color: #8a7a3a;
@@ -322,6 +361,22 @@
       accent-color: #c07070;
     }
 
+    
+    .item-type-badge {
+      font-size: 18px;
+      padding: 4px 8px;
+      border-radius: 10px;
+      background: #4a7a4a;
+      color: #c0e0c0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      order: -1;
+    }
+
+  
     .item-title {
       font-weight: 700;
       font-size: 14px;
@@ -383,7 +438,7 @@
       outline: none;
     }
 
-
+   
     .notes-input {
       width: 130px;
       background: #d5c78e;
@@ -467,13 +522,19 @@
     <h1>🎬 МЫ ХОТИМ ПОСМОТРЕТЬ ИТД</h1>
 
     <div class="add-form">
+      <div class="type-toggle" id="typeToggle">
+        <button class="active" onclick="setType('series')" id="btnSeries">📺 Сериал</button>
+        <button onclick="setType('movie')" id="btnMovie">🎬 Фильм</button>
+      </div>
       <div class="form-row">
         <input type="text" id="inputTitle" placeholder="Название фильма или сериала">
         <input type="number" id="inputRating" placeholder="НУ ТИП ОЦЕНКА" min="0" max="10">
       </div>
-      <div class="form-row">
+      <div class="form-row" id="seasonEpisodeRow">
         <input type="number" id="inputSeason" placeholder="Сезон" min="1">
         <input type="number" id="inputEpisode" placeholder="Серия" min="1">
+      </div>
+      <div class="form-row">
         <input type="text" id="inputNotes" placeholder="заметочки">
       </div>
       <button class="btn btn-add" onclick="addItem()">➕ Добавить</button>
@@ -486,6 +547,8 @@
         <button class="filter-btn" onclick="setFilter('planned')">📋 Запланировано</button>
         <button class="filter-btn" onclick="setFilter('watched')">✅ Просмотрено</button>
         <button class="filter-btn" onclick="setFilter('dropped')">⛔️ Заброшено</button>
+        <button class="filter-btn" onclick="setFilter('series')">📺 Сериалы</button>
+        <button class="filter-btn" onclick="setFilter('movies')">🎬 Фильмы</button>
       </div>
     </div>
 
@@ -530,12 +593,37 @@
     let currentFilter = 'all';
     let currentSort = null;
     let selectedIds = new Set();
+    let currentType = 'series';
 
     onValue(dbRef, (snapshot) => {
       const val = snapshot.val();
       allData = val ? Object.entries(val).map(([key, value]) => ({ ...value, id: key })) : [];
       render();
     });
+
+    function setType(type) {
+      currentType = type;
+      document.getElementById('btnSeries').classList.toggle('active', type === 'series');
+      document.getElementById('btnMovie').classList.toggle('active', type === 'movie');
+
+      const seasonInput = document.getElementById('inputSeason');
+      const episodeInput = document.getElementById('inputEpisode');
+
+      if (type === 'movie') {
+        seasonInput.disabled = true;
+        episodeInput.disabled = true;
+        seasonInput.value = '';
+        episodeInput.value = '';
+        seasonInput.placeholder = '—';
+        episodeInput.placeholder = '—';
+      } else {
+        seasonInput.disabled = false;
+        episodeInput.disabled = false;
+        seasonInput.placeholder = 'Сезон';
+        episodeInput.placeholder = 'Серия';
+      }
+    }
+    window.setType = setType;
 
     function addItem() {
       const title = document.getElementById('inputTitle').value.trim();
@@ -547,9 +635,10 @@
       const newRef = push(dbRef);
       set(newRef, {
         title: title,
+        type: currentType,
         rating: parseFloat(document.getElementById('inputRating').value) || 0,
-        season: seasonVal === '' ? 1 : (parseInt(seasonVal) || 1),
-        episode: episodeVal === '' ? 1 : (parseInt(episodeVal) || 1),
+        season: currentType === 'movie' ? 0 : (seasonVal === '' ? 1 : (parseInt(seasonVal) || 1)),
+        episode: currentType === 'movie' ? 0 : (episodeVal === '' ? 1 : (parseInt(episodeVal) || 1)),
         notes: document.getElementById('inputNotes').value.trim(),
         status: 'watching',
         createdAt: new Date().toISOString()
@@ -564,6 +653,12 @@
       document.getElementById('inputSeason').value = '';
       document.getElementById('inputEpisode').value = '';
       document.getElementById('inputNotes').value = '';
+      if (currentType === 'movie') {
+        document.getElementById('inputSeason').disabled = true;
+        document.getElementById('inputEpisode').disabled = true;
+        document.getElementById('inputSeason').placeholder = '—';
+        document.getElementById('inputEpisode').placeholder = '—';
+      }
     }
 
     function setStatus(id, status) {
@@ -580,14 +675,14 @@
 
     function changeEpisode(id, delta) {
       const item = allData.find(i => i.id === id);
-      if (item) {
+      if (item && item.type !== 'movie') {
         set(ref(db, 'series/' + id + '/episode'), Math.max(1, item.episode + delta));
       }
     }
 
     function changeSeason(id, delta) {
       const item = allData.find(i => i.id === id);
-      if (item) {
+      if (item && item.type !== 'movie') {
         set(ref(db, 'series/' + id + '/season'), Math.max(1, item.season + delta));
       }
     }
@@ -645,10 +740,14 @@
     }
 
     function setFilter(filter) {
-      currentFilter = filter;
+      if (currentFilter === filter) {
+        currentFilter = 'all';
+      } else {
+        currentFilter = filter;
+      }
       selectedIds.clear();
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector(`.filter-btn[onclick="setFilter('${filter}')"]`)?.classList.add('active');
+      document.querySelector(`.filter-btn[onclick="setFilter('${currentFilter}')"]`)?.classList.add('active');
       render();
     }
     window.setFilter = setFilter;
@@ -674,6 +773,8 @@
         case 'planned': data = allData.filter(i => i.status === 'planned'); break;
         case 'watched': data = allData.filter(i => i.status === 'watched'); break;
         case 'dropped': data = allData.filter(i => i.status === 'dropped'); break;
+        case 'series': data = allData.filter(i => i.type === 'series'); break;
+        case 'movies': data = allData.filter(i => i.type === 'movie'); break;
       }
       return data;
     }
@@ -724,9 +825,16 @@
         return;
       }
 
-      container.innerHTML = data.map(item => `
-        <div class="item ${item.status === 'watched' ? 'watched' : ''} ${item.status === 'dropped' ? 'dropped' : ''} ${selectedIds.has(item.id) ? 'selected' : ''}">
+      container.innerHTML = data.map(item => {
+        const isMovie = item.type === 'movie';
+        const isPlanned = item.status === 'planned';
+        const isDropped = item.status === 'dropped';
+        const isWatched = item.status === 'watched';
+        return `
+        <div class="item ${selectedIds.has(item.id) ? 'selected' : ''}">
           <input type="checkbox" class="item-select" ${selectedIds.has(item.id) ? 'checked' : ''} onchange="toggleSelect('${item.id}')" title="Выбрать для удаления">
+
+          <span class="item-type-badge">${isMovie ? '🎬' : '📺'}</span>
 
           <div class="item-title">
             ${item.title}
@@ -739,29 +847,31 @@
 
             <input class="notes-input" type="text" value="${item.notes || ''}" placeholder="заметочки" onchange="updateNotes('${item.id}', this.value)" onclick="event.stopPropagation()">
 
+            ${!isMovie ? `
             <div class="item-season-episode">
               <button class="btn btn-small btn-minus" onclick="changeSeason('${item.id}', -1)" title="Предыдущий сезон">–</button>
-              <span>Сезон ${item.season}</span>
+              <span>Сезон ${item.season || 1}</span>
               <button class="btn btn-small btn-plus" onclick="changeSeason('${item.id}', 1)" title="Следующий сезон">+</button>
             </div>
 
             <div class="item-season-episode">
               <button class="btn btn-small btn-minus" onclick="changeEpisode('${item.id}', -1)" title="Предыдущая серия">–</button>
-              <span>Серия ${item.episode}</span>
+              <span>Серия ${item.episode || 1}</span>
               <button class="btn btn-small btn-plus" onclick="changeEpisode('${item.id}', 1)" title="Следующая серия">+</button>
             </div>
+            ` : ''}
 
             <div class="status-buttons">
               <button class="btn-status watching ${item.status === 'watching' ? 'active' : ''}" onclick="setStatus('${item.id}', 'watching')">📺</button>
-              <button class="btn-status planned-btn ${item.status === 'planned' ? 'active' : ''}" onclick="setStatus('${item.id}', 'planned')">📋</button>
-              <button class="btn-status watched-btn ${item.status === 'watched' ? 'active' : ''}" onclick="setStatus('${item.id}', 'watched')">✅</button>
-              <button class="btn-status dropped-btn ${item.status === 'dropped' ? 'active' : ''}" onclick="setStatus('${item.id}', 'dropped')">⛔️</button>
+              <button class="btn-status planned-btn ${isPlanned ? 'active' : ''}" onclick="setStatus('${item.id}', 'planned')">📋</button>
+              <button class="btn-status watched-btn ${isWatched ? 'active' : ''}" onclick="setStatus('${item.id}', 'watched')">✅</button>
+              <button class="btn-status dropped-btn ${isDropped ? 'active' : ''}" onclick="setStatus('${item.id}', 'dropped')">⛔️</button>
             </div>
 
             <button class="btn btn-small btn-delete" onclick="deleteItem('${item.id}')" title="Удалить">✕</button>
           </div>
         </div>
-      `).join('');
+      `}).join('');
     }
 
     document.getElementById('inputTitle').addEventListener('keydown', function(e) {
