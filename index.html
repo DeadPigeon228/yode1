@@ -163,7 +163,6 @@
       background: #5a2020;
     }
 
-   
     .type-toggle {
       display: flex;
       gap: 0;
@@ -195,7 +194,6 @@
       color: #5c4a1f;
     }
 
-   
     .btn-status {
       padding: 7px 16px;
       font-size: 16px;
@@ -307,7 +305,6 @@
       background: #3a6a3a;
     }
 
-   
     .search-input {
       padding: 8px 14px;
       border-radius: 20px;
@@ -366,7 +363,6 @@
       accent-color: #c07070;
     }
 
-   
     .item-type-badge {
       font-size: 18px;
       padding: 4px 8px;
@@ -381,7 +377,6 @@
       order: -1;
     }
 
-  
     .item-title {
       font-weight: 700;
       font-size: 14px;
@@ -411,7 +406,6 @@
       flex-wrap: wrap;
     }
 
-   
     .rating-display {
       display: flex;
       align-items: center;
@@ -443,7 +437,6 @@
       outline: none;
     }
 
-   
     .notes-input {
       width: 130px;
       background: #d5c78e;
@@ -669,10 +662,15 @@
     }
 
     function setStatus(id, status) {
-     
+      const item = allData.find(i => i.id === id);
       if (status === 'watched') {
+    
         const maxOrder = allData.reduce((max, item) => Math.max(max, item.order || 0), 0);
         set(ref(db, 'series/' + id + '/order'), maxOrder + 1);
+      } else if (item && item.status === 'watched' && status !== 'watched') {
+
+        const minOrder = allData.reduce((min, item) => Math.min(min, item.order || 0), 0);
+        set(ref(db, 'series/' + id + '/order'), minOrder - 1);
       }
       set(ref(db, 'series/' + id + '/status'), status);
     }
