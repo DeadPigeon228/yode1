@@ -163,7 +163,7 @@
       background: #5a2020;
     }
 
-   
+  
     .type-toggle {
       display: flex;
       gap: 0;
@@ -195,6 +195,7 @@
       color: #5c4a1f;
     }
 
+  
     .btn-status {
       padding: 7px 16px;
       font-size: 16px;
@@ -283,7 +284,7 @@
       color: #d0f0d0;
     }
 
-   
+  
     .sort-btn {
       padding: 8px 14px;
       border-radius: 20px;
@@ -307,7 +308,6 @@
       background: #3a6a3a;
     }
 
-   
     .search-input {
       padding: 8px 14px;
       border-radius: 20px;
@@ -376,7 +376,7 @@
       order: -1;
     }
 
-  
+   
     .item-title {
       font-weight: 700;
       font-size: 14px;
@@ -406,7 +406,7 @@
       flex-wrap: wrap;
     }
 
-
+    
     .rating-display {
       display: flex;
       align-items: center;
@@ -543,9 +543,9 @@
     <div class="toolbar">
       <div class="filters">
         <button class="filter-btn active" onclick="setFilter('all')">Все</button>
-        <button class="filter-btn" onclick="setFilter('watching')">📺 Смотрим</button>
+        <button class="filter-btn" onclick="setFilter('watching')">👀 Смотрим</button>
         <button class="filter-btn" onclick="setFilter('planned')">📋 Запланировано</button>
-        <button class="filter-btn" onclick="setFilter('watched')">✅ Просмотрено</button>
+        <button class="filter-btn" onclick="setFilter('watched')">🟢 Просмотрено</button>
         <button class="filter-btn" onclick="setFilter('dropped')">⛔️ Заброшено</button>
         <button class="filter-btn" onclick="setFilter('series')">📺 Сериалы</button>
         <button class="filter-btn" onclick="setFilter('movies')">🎬 Фильмы</button>
@@ -830,6 +830,7 @@
         const isPlanned = item.status === 'planned';
         const isDropped = item.status === 'dropped';
         const isWatched = item.status === 'watched';
+        const isWatching = item.status === 'watching';
         return `
         <div class="item ${selectedIds.has(item.id) ? 'selected' : ''}">
           <input type="checkbox" class="item-select" ${selectedIds.has(item.id) ? 'checked' : ''} onchange="toggleSelect('${item.id}')" title="Выбрать для удаления">
@@ -862,9 +863,9 @@
             ` : ''}
 
             <div class="status-buttons">
-              <button class="btn-status watching ${item.status === 'watching' ? 'active' : ''}" onclick="setStatus('${item.id}', 'watching')">📺</button>
+              <button class="btn-status watching ${isWatching ? 'active' : ''}" onclick="setStatus('${item.id}', 'watching')">👀</button>
               <button class="btn-status planned-btn ${isPlanned ? 'active' : ''}" onclick="setStatus('${item.id}', 'planned')">📋</button>
-              <button class="btn-status watched-btn ${isWatched ? 'active' : ''}" onclick="setStatus('${item.id}', 'watched')">✅</button>
+              <button class="btn-status watched-btn ${isWatched ? 'active' : ''}" onclick="setStatus('${item.id}', 'watched')">🟢</button>
               <button class="btn-status dropped-btn ${isDropped ? 'active' : ''}" onclick="setStatus('${item.id}', 'dropped')">⛔️</button>
             </div>
 
