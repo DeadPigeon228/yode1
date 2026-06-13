@@ -163,7 +163,7 @@
       background: #5a2020;
     }
 
-  
+   
     .type-toggle {
       display: flex;
       gap: 0;
@@ -195,7 +195,7 @@
       color: #5c4a1f;
     }
 
-  
+   
     .btn-status {
       padding: 7px 16px;
       font-size: 16px;
@@ -284,7 +284,6 @@
       color: #d0f0d0;
     }
 
-  
     .sort-btn {
       padding: 8px 14px;
       border-radius: 20px;
@@ -308,6 +307,7 @@
       background: #3a6a3a;
     }
 
+   
     .search-input {
       padding: 8px 14px;
       border-radius: 20px;
@@ -349,6 +349,11 @@
       background: #d4a0a0;
     }
 
+    .item.watched-item {
+      opacity: 0.7;
+      border-color: #8a9e6a;
+    }
+
     .item:hover {
       background: #d5c78e;
       border-color: #8a7a3a;
@@ -361,7 +366,7 @@
       accent-color: #c07070;
     }
 
-    
+   
     .item-type-badge {
       font-size: 18px;
       padding: 4px 8px;
@@ -376,7 +381,7 @@
       order: -1;
     }
 
-   
+  
     .item-title {
       font-weight: 700;
       font-size: 14px;
@@ -406,7 +411,7 @@
       flex-wrap: wrap;
     }
 
-    
+   
     .rating-display {
       display: flex;
       align-items: center;
@@ -633,6 +638,7 @@
       const episodeVal = document.getElementById('inputEpisode').value.trim();
 
       const newRef = push(dbRef);
+      const maxOrder = allData.reduce((max, item) => Math.max(max, item.order || 0), 0);
       set(newRef, {
         title: title,
         type: currentType,
@@ -641,6 +647,7 @@
         episode: currentType === 'movie' ? 0 : (episodeVal === '' ? 1 : (parseInt(episodeVal) || 1)),
         notes: document.getElementById('inputNotes').value.trim(),
         status: 'watching',
+        order: maxOrder + 1,
         createdAt: new Date().toISOString()
       });
 
@@ -662,6 +669,11 @@
     }
 
     function setStatus(id, status) {
+     
+      if (status === 'watched') {
+        const maxOrder = allData.reduce((max, item) => Math.max(max, item.order || 0), 0);
+        set(ref(db, 'series/' + id + '/order'), maxOrder + 1);
+      }
       set(ref(db, 'series/' + id + '/status'), status);
     }
 
@@ -805,6 +817,13 @@
             data.sort((a, b) => (b.rating || 0) - (a.rating || 0));
             break;
         }
+      } else {
+       
+        data.sort((a, b) => {
+          if (a.status === 'watched' && b.status !== 'watched') return 1;
+          if (a.status !== 'watched' && b.status === 'watched') return -1;
+          return (a.order || 0) - (b.order || 0);
+        });
       }
 
       return data;
@@ -832,7 +851,7 @@
         const isWatched = item.status === 'watched';
         const isWatching = item.status === 'watching';
         return `
-        <div class="item ${selectedIds.has(item.id) ? 'selected' : ''}">
+        <div class="item ${isWatched ? 'watched-item' : ''} ${selectedIds.has(item.id) ? 'selected' : ''}">
           <input type="checkbox" class="item-select" ${selectedIds.has(item.id) ? 'checked' : ''} onchange="toggleSelect('${item.id}')" title="Выбрать для удаления">
 
           <span class="item-type-badge">${isMovie ? '🎬' : '📺'}</span>
